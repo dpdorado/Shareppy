@@ -29,6 +29,13 @@
                 <x-jet-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" required autocomplete="new-password" />
             </div>
 
+            <div class="mt-4">
+                <x-jet-label for="role" value="{{ __('Role') }}" />
+                <x-jet-input id="role" class="block mt-1 w-full" type="text" name="role" required readonly  value="user" />
+            </div>
+
+            
+
             @if (Laravel\Jetstream\Jetstream::hasTermsAndPrivacyPolicyFeature())
                 <div class="mt-4">
                     <x-jet-label for="terms">

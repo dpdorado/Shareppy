@@ -22,7 +22,7 @@ class CreateNewUser implements CreatesNewUsers
      * @return \App\Models\User
      */
     public function create(array $input)
-    {
+    {        
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
@@ -37,7 +37,7 @@ class CreateNewUser implements CreatesNewUsers
                 'password' => Hash::make($input['password']),
             ]);
             
-            $user->roles()->attach(Role::where('name', 'user')->first());
+            $user->roles()->attach(Role::where('name', $input['role'])->first());
 
             return tap($user
                 , function (User $user) {
@@ -45,6 +45,30 @@ class CreateNewUser implements CreatesNewUsers
             });
         });
         
+    }
+
+    public function edit(array $input)
+    {        
+        Validator::make($input, [
+            'id'=>'exists:bills,id',
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255'],
+            'password' => $this->passwordRules(),
+            'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['required', 'accepted'] : '',
+        ])->validate();
+
+        return DB::transaction(function () use ($input) {
+            $user=User::findOrFile($id);
+            $user->name =$input['namee'];
+            $user->email= $input['email'];
+            $user->password = Hash::make($input['password']);            
+            $user->save();            
+            //$role
+            //$user->roles()->detach(User:: $user);
+
+            //$user->roles()->attach(Role::where('name', $input['role'])->first());
+            
+        });        
     }
 
     /**
